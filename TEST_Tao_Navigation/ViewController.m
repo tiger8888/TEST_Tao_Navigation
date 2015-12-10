@@ -47,7 +47,6 @@
     self.navigationItem.leftBarButtonItem=leftItem;
     self.navigationItem.leftBarButtonItem.tintColor=[UIColor whiteColor];
     
-    [self addPageView];
 }
 
 -(void)backAction{
@@ -70,6 +69,7 @@
     self.bottomScrollView=bottomView;
     [_topScrollview addSubview:bottomView];
     self.originalInset=_topScrollview.contentInset;
+    [self addPageView];
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -159,11 +159,12 @@
     for(int i=0;i<4;i++){
         UIView* v=[self makePicView:[NSString stringWithFormat:@"dog%d.jpg",i]];
         [_conview addSubview:v];
+        NSDictionary* metric=@{@"w":@(self.view.frame.size.width)};
         if(preView==nil){
             NSDictionary* viewdic=@{
                                     @"v":v
                                     };
-            [_conview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[v(==320)]" options:0 metrics:nil views:viewdic]];
+            [_conview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[v(==w)]" options:0 metrics:metric views:viewdic]];
             [_conview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[v]|" options:0 metrics:nil views:viewdic]];
         }
         else{
@@ -171,12 +172,12 @@
                                     @"v":v,
                                     @"p":preView
                                     };
-            [_conview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[p][v(==320)]" options:0 metrics:nil views:viewdic]];
+            [_conview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[p][v(==w)]" options:0 metrics:metric views:viewdic]];
             [_conview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[v]|" options:0 metrics:nil views:viewdic]];
         }
         preView=v;
     }
-    _conWidthCts.constant=3*320;
+    _conWidthCts.constant=3*self.view.frame.size.width;
 }
 
 -(UIView*)makePicView:(NSString*)picName{
@@ -187,7 +188,7 @@
     [view addSubview:v];
     [view addConstraint:[NSLayoutConstraint constraintWithItem:v attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeCenterX multiplier:1.0f constant:0]];
     [view addConstraint:[NSLayoutConstraint constraintWithItem:v attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeCenterY multiplier:1.0f constant:0]];
-    [view addConstraint:[NSLayoutConstraint constraintWithItem:v attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:320]];
+    [view addConstraint:[NSLayoutConstraint constraintWithItem:v attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:self.view.frame.size.width]];
     [view addConstraint:[NSLayoutConstraint constraintWithItem:v attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:275]];
     return view;
 }
